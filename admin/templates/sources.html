@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}数据源管理{% endblock %}
+
+{% block breadcrumb %}<span>› 数据源管理</span>{% endblock %}
+
+{% block extra_css %}
+<style>
+.sources-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.sources-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* 表格样式 */
+.sources-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.sources-table thead th {
+    background: var(--bg);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 14px 16px;
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+}
+.sources-table tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid var(--border);
+}
+.sources-table tbody tr:hover {
+    background: #fafafa;
+}
+.sources-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.sources-table td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border);
+}
+
+/* 数据源信息列 */
+.source-info-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.source-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    flex-shrink: 0;
+}
+.source-icon-wrap svg {
+    width: 22px;
+    height: 22px;
+}
+.source-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+.source-url {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-top: 2px;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 类型徽章 */
+.badge-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+.badge-source.builtin {
+    background: #f0f0f0;
+    color: #595959;
+}
+.badge-source.custom {
+    background: rgba(30,128,255,0.1);
+    color: var(--primary);
+}
+
+/* 状态 */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-dot.enabled {
+    background: var(--success);
+    box-shadow: 0 0 6px rgba(82,196,26,0.4);
+}
+.status-dot.disabled {
+    background: #d9d9d9;
+}
+.status-text.enabled { color: var(--success); }
+.status-text.disabled { color: var(--text-secondary); }
+
+/* 刷新间隔 */
+.schedule-form {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.schedule-form input[type="number"] {
+    width: 64px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    transition: var(--transition);
+}
+.schedule-form input[type="number"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(30,128,255,0.1);
+}
+.schedule-form span {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+/* 操作按钮 */
+.source-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.source-actions .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    gap: 4px;
+}
+.source-actions .btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+.empty-state svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+}
+
+/* 刷新间隔说明 */
+.schedule-hint {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 20px;
+}
+.schedule-hint table {
+    margin-bottom: 0;
+}
+.schedule-hint th,
+.schedule-hint td {
+    padding: 10px 12px;
+    font-size: 13px;
+}
+.schedule-hint p {
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+    .source-url {
+        max-width: 160px;
+    }
+    .source-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+@media (max-width: 768px) {
+    .sources-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .sources-table th:nth-child(4),
+    .sources-table td:nth-child(4) {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="sources-header">
+        <div>
+            <h2 class="card-title" style="margin-bottom: 6px;"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-refresh"/></svg> 数据源管理</h2>
+            <p>管理所有数据源（内置 + 自定义），支持测试运行、编辑和删除</p>
+        </div>
+        <a href="/admin/custom-source/new" class="btn btn-primary">
+            <svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-plus"/></svg> 创建新数据源
+        </a>
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table class="sources-table">
+        <thead>
+            <tr>
+                <th style="padding-left: 20px;">数据源</th>
+                <th>类型</th>
+                <th>状态</th>
+                <th>刷新间隔</th>
+                <th style="padding-right: 20px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for source in sources %}
+            <tr>
+                <td style="padding-left: 20px;">
+                    <div class="source-info-cell">
+                        <div class="source-icon-wrap">
+                            <svg>
+                                {% if source.name == 'github_html' %}<use href="#icon-github"/>
+                                {% elif source.name == 'hackernews' %}<use href="#icon-hackernews"/>
+                                {% elif source.name == 'reddit' %}<use href="#icon-reddit"/>
+                                {% elif source.name == 'juejin' %}<use href="#icon-juejin"/>
+                                {% elif source.name == 'gitee' %}<use href="#icon-gitee"/>
+                                {% else %}<use href="#icon-globe"/>
+                                {% endif %}
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="source-name">{{ source.name }}</div>
+                            {% if source.url %}
+                            <div class="source-url" title="{{ source.url }}">{{ source.url }}</div>
+                            {% elif source.description %}
+                            <div class="source-url" title="{{ source.description }}">{{ source.description }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge-source {{ source.type }}">
+                        {% if source.type == 'builtin' %}内置{% else %}自定义{% endif %}
+                    </span>
+                </td>
+                <td>
+                    <span class="status-indicator">
+                        <span class="status-dot {{ 'enabled' if source.enabled else 'disabled' }}"></span>
+                        <span class="status-text {{ 'enabled' if source.enabled else 'disabled' }}">
+                            {{ '已启用' if source.enabled else '已禁用' }}
+                        </span>
+                    </span>
+                </td>
+                <td>
+                    <form method="post" action="/admin/sources/schedule" class="schedule-form">
+                        <input type="hidden" name="source_id" value="{{ source.name }}">
+                        <input type="number" name="interval" value="{{ source.schedule_interval or 0 }}" min="0" title="刷新间隔（分钟）">
+                        <span>分钟</span>
+                        <button type="submit" class="btn btn-secondary btn-sm">设置</button>
+                    </form>
+                </td>
+                <td style="padding-right: 20px;">
+                    <div class="source-actions">
+                        <form method="post" action="/admin/sources/toggle" style="display: inline;">
+                            <input type="hidden" name="source_id" value="{{ source.name }}">
+                            <button type="submit" class="btn {% if source.enabled %}btn-danger{% else %}btn-primary{% endif %} btn-sm">
+                                {% if source.enabled %}
+                                <svg><use href="#icon-times"/></svg> 禁用
+                                {% else %}
+                                <svg><use href="#icon-check"/></svg> 启用
+                                {% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="/admin/refresh/{{ source.name }}" style="display: inline;" data-confirm="确定要刷新 {{ source.name }} 吗？">
+                            <button type="submit" class="btn btn-secondary btn-sm">
+                                <svg><use href="#icon-refresh"/></svg> 刷新
+                            </button>
+                        </form>
+                        <form method="post" action="/admin/source/test" style="display: inline;">
+                            <input type="hidden" name="name" value="{{ source.name }}">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <svg><use href="#icon-play"/></svg> 测试
+                            </button>
+                        </form>
+                        <form method="post" action="/admin/custom-source/edit" style="display: inline;">
+                            <input type="hidden" name="name" value="{{ source.name }}">
+                            <button type="submit" class="btn btn-secondary btn-sm">
+                                <svg><use href="#icon-edit"/></svg> 编辑
+                            </button>
+                        </form>
+                        <form method="post" action="/admin/source/delete" style="display: inline;" onsubmit="return confirm('确定要删除 {{ source.name }} 吗？')">
+                            <input type="hidden" name="name" value="{{ source.name }}">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <svg><use href="#icon-trash"/></svg> 删除
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="empty-state">
+                    <svg><use href="#icon-globe"/></svg>
+                    <p>暂无数据源</p>
+                    <a href="/admin/custom-source/new" class="btn btn-primary btn-sm" style="margin-top: 12px;">创建第一个数据源</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card schedule-hint" style="margin-top: 24px;">
+    <div class="card-header" style="margin-bottom: 16px;">
+        <h2 class="card-title"><svg style="width:18px;height:18px;display:inline-block;vertical-align:middle;"><use href="#icon-note"/></svg> 刷新间隔说明</h2>
+    </div>
+    <table>
+        <tr><th style="width: 80px;">数值</th><th>含义</th></tr>
+        <tr><td><strong>0</strong></td><td>不自动刷新（需手动）</td></tr>
+        <tr><td><strong>30</strong></td><td>每30分钟刷新一次</td></tr>
+        <tr><td><strong>60</strong></td><td>每小时刷新一次</td></tr>
+        <tr><td><strong>360</strong></td><td>每6小时刷新一次</td></tr>
+        <tr><td><strong>1440</strong></td><td>每天刷新一次</td></tr>
+    </table>
+    <p style="color: var(--text-secondary); font-size: 13px;">
+        <svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-lightbulb"/></svg> 刷新间隔在守护进程模式下生效 (--daemon 模式)
+    </p>
+</div>
+{% endblock %}

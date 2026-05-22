@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}删除项目{% endblock %}
+
+{% block breadcrumb %}<span>› <a href="/admin/projects">项目管理</a></span><span>› 删除</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-warning"/></svg> 确认删除项目</h2>
+    </div>
+    
+    <div style="background: #fff2f0; border: 1px solid #ffccc7; border-radius: 6px; padding: 16px; margin-bottom: 20px;">
+        <p style="color: var(--danger); margin: 0;"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-warning"/></svg> 确定要删除以下项目吗？此操作不可撤销。</p>
+    </div>
+    
+    <table>
+        <tr><th style="width: 120px;">项目名称</th><td>{{ project.project_name }}</td></tr>
+        <tr><th>来源</th><td>{{ project.source }}</td></tr>
+        <tr><th>语言</th><td>{{ project.language or '-' }}</td></tr>
+        <tr><th>Stars</th><td>{{ project.stars }}</td></tr>
+        {% if project.description %}
+        <tr><th>描述</th><td>{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</td></tr>
+        {% endif %}
+    </table>
+    
+    <form method="post" style="margin-top: 24px;">
+        <div class="btn-group">
+            <button type="submit" class="btn btn-danger"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-trash"/></svg> 确认删除</button>
+            <a href="/admin/projects" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

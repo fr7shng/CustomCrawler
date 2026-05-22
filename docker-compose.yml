@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  scraper:
+    build: .
+    container_name: github-trending-scraper
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=Asia/Shanghai
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me}
+    command: python main.py --admin

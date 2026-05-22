@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}新建项目{% endblock %}
+
+{% block breadcrumb %}<span>› <a href="/admin/projects">项目管理</a></span><span>› 新建</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-plus"/></svg> 添加新项目</h2>
+    </div>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="project_name">项目名称 *</label>
+            <input type="text" id="project_name" name="project_name" placeholder="输入项目名称" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="project_url">项目URL *</label>
+            <input type="url" id="project_url" name="project_url" placeholder="https://github.com/..." required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">描述</label>
+            <textarea id="description" name="description" placeholder="输入项目描述..."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="author">作者</label>
+            <input type="text" id="author" name="author" placeholder="输入作者名称">
+        </div>
+        
+        <div class="form-group">
+            <label for="stars">Stars</label>
+            <input type="number" id="stars" name="stars" value="0" min="0">
+        </div>
+        
+        <div class="form-group">
+            <label for="language">语言</label>
+            <select id="language" name="language">
+                <option value="">选择语言</option>
+                {% for lang in languages %}
+                <option value="{{ lang }}">{{ lang }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="source">来源</label>
+            <select id="source" name="source">
+                <option value="manual"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-edit"/></svg> 手动添加</option>
+                {% for src in sources %}
+                <option value="{{ src }}">{{ src }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-floppy"/></svg> 创建项目</button>
+            <a href="/admin/projects" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

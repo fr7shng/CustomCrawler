@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block breadcrumb %}<span>› 用户管理</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-users"/></svg> 用户列表</h2>
+        <a href="/admin/users/new" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-plus"/></svg> 添加用户</a>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>用户名</th>
+                <th>角色</th>
+                <th>创建时间</th>
+                <th style="width: 200px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user[0] }}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px;">
+                            {{ user[1][0].upper() }}
+                        </div>
+                        <strong>{{ user[1] }}</strong>
+                    </div>
+                </td>
+                <td>
+                    {% if user[2] == 'admin' %}
+                    <span class="badge badge-primary"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-crown"/></svg> 管理员</span>
+                    {% else %}
+                    <span class="badge badge-secondary"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-user"/></svg> 普通用户</span>
+                    {% endif %}
+                </td>
+                <td>{{ user[3] }}</td>
+                <td>
+                    <a href="/admin/users/edit/{{ user[0] }}" class="btn btn-primary btn-sm"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-edit"/></svg> 编辑</a>
+                    {% if user[0] != session.get('user_id') %}
+                    <form method="post" action="/admin/users/delete/{{ user[0] }}" style="display: inline;" data-confirm="确定要删除用户 {{ user[1] }} 吗？">
+                        <button type="submit" class="btn btn-danger btn-sm"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-trash"/></svg> 删除</button>
+                    </form>
+                    {% else %}
+                    <span style="color: var(--text-secondary); font-size: 12px;">(当前用户)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-secondary);">暂无用户</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-lock"/></svg> 角色说明</h2>
+    </div>
+    <table>
+        <tr><th>角色</th><th>权限</th></tr>
+    <tr><td><span class="badge badge-primary"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-crown"/></svg> 管理员</span></td><td>完全访问权限，包括用户管理</td></tr>
+    <tr><td><span class="badge badge-secondary"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-user"/></svg> 普通用户</span></td><td>项目管理、数据刷新，无法管理用户</td></tr>
+    </table>
+</div>
+{% endblock %}

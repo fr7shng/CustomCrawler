@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% set is_editing = source or (generated_code and name) %}
+{% block title %}{% if is_editing %}编辑数据源{% else %}创建数据源{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+<span>› <a href="/admin/sources">数据源</a></span>
+{% if is_editing %}<span>› 编辑</span>{% else %}<span>› 新建</span>{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;">{% if is_editing %}<use href="#icon-edit"/>{% else %}<use href="#icon-plus"/>{% endif %}</svg> {% if is_editing %}编辑数据源{% else %}创建新数据源{% endif %}</h2>
+    </div>
+
+    {% if generated_code %}
+    <form method="post" action="/admin/custom-source/save">
+        <input type="hidden" name="name" value="{{ name }}">
+        <input type="hidden" name="description" value="{{ description }}">
+        <input type="hidden" name="source_code" id="source_code" value="{{ generated_code }}">
+
+        <div class="form-group">
+            <label for="generated_preview">生成的代码预览</label>
+            <pre style="background: var(--bg); padding: 16px; border-radius: 4px; max-height: 400px; overflow: auto; font-size: 12px; line-height: 1.5;">{{ generated_code }}</pre>
+        </div>
+
+        <div class="form-group">
+            <label for="source_code_editor">编辑代码（如有需要可微调）</label>
+            <textarea id="source_code_editor" name="source_code_editor" rows="20" style="font-family: monospace; font-size: 13px;">{{ generated_code }}</textarea>
+            <script>
+                // Sync textarea with hidden input
+                document.getElementById('source_code_editor').addEventListener('input', function() {
+                    document.getElementById('source_code').value = this.value;
+                });
+            </script>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-floppy"/></svg> 保存并加载</button>
+            <a href="/admin/custom-sources" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+
+    <div class="card" style="margin-top: 20px; background: var(--bg);">
+        <div class="card-header">
+            <h3 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-lightbulb"/></svg> 调试提示</h3>
+        </div>
+        <ul style="line-height: 1.8; padding-left: 20px;">
+            <li>保存后可以点击"测试运行"来验证代码是否正常工作</li>
+            <li>如果测试失败，会显示错误信息，你可以修改代码后重新保存</li>
+            <li>代码中需要实现 <code>scrape()</code> 方法，返回 <code>List[UnifiedProject]</code></li>
+        </ul>
+    </div>
+
+    {% else %}
+    <form method="post" action="/admin/custom-source/generate">
+        <div class="form-group">
+            <label for="name">数据源名称 *</label>
+            <input type="text" id="name" name="name" value="{{ name }}" placeholder="例如: my_blog" required>
+            <small style="color: var(--text-secondary);">用于标识此数据源，不能包含空格</small>
+        </div>
+
+        <div class="form-group">
+            <label for="description">功能描述 *</label>
+            <textarea id="description" name="description" rows="4" placeholder="用自然语言描述你想要爬取的内容，例如：&#10;爬取小红书上关于 AI 工具的热门帖子，提取标题、作者、点赞数和评论数" required>{{ description }}</textarea>
+            <small style="color: var(--text-secondary);">描述越详细，生成的代码越准确</small>
+        </div>
+
+        <div class="form-group">
+            <label for="prompt_hint">Prompt 提示（可选）</label>
+            <textarea id="prompt_hint" name="prompt_hint" rows="4" placeholder="补充说明或特定要求，如需要额外处理逻辑等">{{ prompt_hint }}</textarea>
+            <small style="color: var(--text-secondary);">可以补充额外的提示信息，帮助 AI 生成更准确的代码</small>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" id="generateBtn" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-rocket"/></svg> AI 生成代码</button>
+            <a href="/admin/custom-sources" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+    <script>
+    document.getElementById('generateBtn').closest('form').addEventListener('submit', function(e) {
+        var btn = document.getElementById('generateBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ 正在生成，请稍候（可能需要1-3分钟）...';
+    });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

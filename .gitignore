@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Cache
+.pytest_cache/
+.ruff_cache/
+
+# Runtime data
+*.db
+
+# Logs
+logs/
+*.log
+
+# Generated output (except generator templates)
+output/
+!generator/templates/
+reports/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Trellis internal
+.trellis/.gitignore
+.trellis/.template-hashes.json
+.trellis/.version
+.trellis/workflow.md
+.trellis/workspace/
+
+# Claude plugin
+.claude-plugin/

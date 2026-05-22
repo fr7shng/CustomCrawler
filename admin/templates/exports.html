@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}数据导出{% endblock %}
+{% block breadcrumb %}<span>› 数据导出</span>{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">数据导出</h2>
+        <span style="color:var(--text-secondary);font-size:14px;">共 <strong>{{ total }}</strong> 个项目</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:20px;">
+        <div style="background:var(--bg);border-radius:8px;padding:24px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">📄</div>
+            <h3 style="margin-bottom:8px;">JSON</h3>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">完整数据，适合程序处理</p>
+            <a href="/admin/exports/json" class="btn btn-primary">下载 JSON</a>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:24px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">📊</div>
+            <h3 style="margin-bottom:8px;">CSV</h3>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">兼容 Excel，适合数据分析</p>
+            <a href="/admin/exports/csv" class="btn btn-primary">下载 CSV</a>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:24px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">📝</div>
+            <h3 style="margin-bottom:8px;">Markdown</h3>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">适合嵌入文档和笔记</p>
+            <a href="/admin/exports/markdown" class="btn btn-primary">下载 Markdown</a>
+        </div>
+        <div style="background:var(--bg);border-radius:8px;padding:24px;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">📃</div>
+            <h3 style="margin-bottom:8px;">纯文本</h3>
+            <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">简洁列表格式，易于阅读</p>
+            <a href="/admin/exports/txt" class="btn btn-primary">下载 TXT</a>
+        </div>
+    </div>
+    <div class="filters" style="margin-top:24px;">
+        <form method="get">
+            <select name="language">
+                <option value="">所有语言</option>
+                {% for lang in languages %}
+                <option value="{{ lang }}" {% if lang == language %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <select name="source">
+                <option value="">所有来源</option>
+                {% for src in sources %}
+                <option value="{{ src }}" {% if src == source %}selected{% endif %}>{{ src }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-secondary">更新筛选</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

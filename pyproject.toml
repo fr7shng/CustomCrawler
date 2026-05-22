@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "github-trending-scraper"
+version = "2.0.0"
+description = "Multi-source trending project discovery and analysis platform"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31.0",
+    "pyyaml>=6.0.1",
+    "schedule>=1.2.1",
+    "flask>=3.0.0",
+    "lxml>=6.0.0",
+    "lxml-html-clean>=0.4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "ruff>=0.1.0"]
+
+[tool.ruff]
+target-version = "py39"
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N"]
+ignore = ["E501"]
+
+[tool.coverage.run]
+source = ["scraper", "analyzer", "generator", "storage", "config", "admin"]

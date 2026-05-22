@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}审计日志{% endblock %}
+{% block breadcrumb %}<span>› 审计日志</span>{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">审计日志</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>时间</th>
+                <th>用户</th>
+                <th>操作</th>
+                <th>资源类型</th>
+                <th>详情</th>
+                <th>IP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td>{{ log.timestamp }}</td>
+                <td><strong>{{ log.username or '系统' }}</strong></td>
+                <td><span class="badge badge-primary">{{ log.action }}</span></td>
+                <td>{{ log.resource_type or '-' }}</td>
+                <td><span style="font-size:13px;color:var(--text-secondary);">{{ log.details or '-' }}</span></td>
+                <td><code style="font-size:12px;">{{ log.ip_address or '-' }}</code></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center;color:var(--text-secondary);">暂无日志</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

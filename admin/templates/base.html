@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}管理后台{% endblock %} - Custom Crawler</title>
+    <svg style="display:none">
+      <symbol id="icon-dashboard" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </symbol>
+      <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+      </symbol>
+      <symbol id="icon-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </symbol>
+      <symbol id="icon-tools" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.4 1.4a1 1 0 0 0 1.4 0 1 1 0 0 0 0-1.4l-1.4-1.4a1 1 0 0 0-1.4 0z"/><path d="M12 2L12 6"/><path d="M12 18L12 22"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12L6 12"/><path d="M18 12L22 12"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/>
+      </symbol>
+      <symbol id="icon-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m-7.5 7.5l-2 2"/>
+      </symbol>
+      <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </symbol>
+      <symbol id="icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </symbol>
+      <symbol id="icon-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </symbol>
+      <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </symbol>
+      <symbol id="icon-lightbulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+      </symbol>
+      <symbol id="icon-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </symbol>
+      <symbol id="icon-lightning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </symbol>
+      <symbol id="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </symbol>
+      <symbol id="icon-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+      </symbol>
+      <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </symbol>
+      <symbol id="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </symbol>
+      <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      </symbol>
+      <symbol id="icon-floppy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+        <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"/>
+      </symbol>
+      <symbol id="icon-times" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </symbol>
+      <symbol id="icon-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+      </symbol>
+      <symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+      </symbol>
+      <symbol id="icon-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+        <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+        <path d="M9 12H4s.55-1 2-2a2.21 2.21 0 0 1 2.91-.09c.79.71.79 2.07 0 2.78l-2.91 1.31"/>
+      </symbol>
+      <symbol id="icon-juejin" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M11.992 2.002c-5.628 0-10.99 5.362-10.99 10.99 0 5.628 5.362 10.99 10.99 10.99 5.628 0 10.99-5.362 10.99-10.99 0-5.628-5.362-10.99-10.99-10.99zm.008 17.982c-3.868 0-6.99-3.122-6.99-6.99 0-3.868 3.122-6.99 6.99-6.99 3.868 0 6.99 3.122 6.99 6.99 0 3.868-3.122 6.99-6.99 6.99z"/>
+      </symbol>
+      <symbol id="icon-github" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.42-1.305.763-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </symbol>
+      <symbol id="icon-hackernews" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16v12H4z"/><path d="M8 8h8v8H8z"/>
+      </symbol>
+      <symbol id="icon-reddit" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.345-.12.691-.12.927 0 1.188.856 2.85 1.418 4.674 1.488l-.8-3.747-.547-2.597a1.249 1.249 0 0 1 2.499-.056c.001.688.562 1.249 1.249 1.249 1.412-.001 2.025-.628 2.188-1.558l.815-4.813c-.064-.433-.403-.757-.816-.757-.413 0-.752.324-.815.757l.815 4.813c.163.93-.776 1.557-2.188 1.558z"/>
+      </symbol>
+      <symbol id="icon-gitee" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.155.479-.277.998-.345 1.467-.024-.102-.048-.175-.048-.267 0-.363.325-.659.726-.659.363 0 .659.277.659.659-.036.223-.065.438-.103.668-.379-.145-.778-.27-1.193-.398.421.792.753 1.766 1.095 2.614-.379-.131-.768-.24-1.132-.363.182.435.333.893.469 1.367-.428-.055-.876-.086-1.318-.133.155.392.282.793.398 1.191-.509-.018-1.018-.018-1.477-.018-.459 0-.968 0-1.477.018.116-.398.243-.799.398-1.191-.442.047-.87.078-1.318.133.136-.474.287-.932.469-1.367-.364.123-.753.232-1.132.363.342-.848.674-1.822 1.095-2.614-.415.128-.814.253-1.193.398-.038-.23-.067-.445-.103-.668 0-.382.296-.659.659-.659.401 0 .726.296.726.659-.067-.469-.19-.988-.345-1.467-.514.246-.987.536-1.404.878-.381.313-.722.654-.993 1.025-.326-.565-.509-1.169-.509-1.797 0-.628.254-1.196.616-1.629.329-.394.753-.685 1.21-.893-.096-.257-.15-.534-.15-.82 0-.963.788-1.746 1.746-1.746.958 0 1.746.783 1.746 1.746 0 .285-.054.563-.15.82.457.208.881.499 1.21.893.362.433.616 1.001.616 1.629 0 .628-.183 1.232-.509 1.797-.271-.371-.612-.712-.993-1.025-.417-.342-.89-.632-1.404-.878z"/>
+      </symbol>
+      <symbol id="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </symbol>
+      <symbol id="icon-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </symbol>
+      <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </symbol>
+      <symbol id="icon-crown" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2 19l2 3h16l2-3M4 16v-4l2-2 2 2v4M16 16v-4l2-2 2 2v4M6 16v-4l2-2 2 2v4M12 5l2 3h4l2-3"/>
+      </symbol>
+      <symbol id="icon-fire" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-.245-1.865-.53-2.654.562-.5.687-.425 1.623-.24 2.486.11.534.453.95.888 1.175.435.225 1.025.15 1.526.563z"/>
+        <path d="M12 21c-2.828 0-5.714-2.686-5.714-5.714 0-1.106.31-2.144.855-3.016 1.08.593 2.07 1.578 2.606 2.65.2.403.616.68 1.053.68.437 0 .853-.277 1.053-.68.536-1.072 1.526-2.057 2.606-2.65.545.872.855 1.91.855 3.016 0 3.028-2.886 5.714-5.714 5.714z"/>
+      </symbol>
+      <symbol id="icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+      </symbol>
+    </svg>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #1E80FF;
+            --primary-dark: #0066CC;
+            --success: #52c41a;
+            --danger: #ff4d4f;
+            --warning: #faad14;
+            --bg: #f0f2f5;
+            --sidebar-bg: #001529;
+            --sidebar-hover: rgba(255,255,255,0.1);
+            --sidebar-active: var(--primary);
+            --text-primary: #262626;
+            --text-secondary: #8c8c8c;
+            --border: #e8e8e8;
+            --card-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            --transition: all 0.3s ease;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        /* Layout */
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 220px;
+            background: var(--sidebar-bg);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        .sidebar.collapsed { width: 64px; }
+        .sidebar-header {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            gap: 12px;
+        }
+        .sidebar-header .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .sidebar-header h1 {
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .sidebar.collapsed .sidebar-header h1 { display: none; }
+        .sidebar-nav { padding: 12px 0; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+            transition: var(--transition);
+            gap: 12px;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+        .nav-item.active {
+            background: var(--sidebar-hover);
+            color: white;
+            border-left-color: var(--primary);
+        }
+        .nav-item .icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .nav-item .icon svg { width: 18px; height: 18px; }
+        .card-title .icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; margin-right: 4px; }
+        .card-title .icon svg { width: 20px; height: 20px; }
+        .nav-item .text { white-space: nowrap; }
+        .sidebar.collapsed .nav-item .text { display: none; }
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 12px; }
+        
+        /* Main Content */
+        .main {
+            flex: 1;
+            margin-left: 220px;
+            transition: var(--transition);
+        }
+        .sidebar.collapsed ~ .main { margin-left: 64px; }
+        
+        /* Header */
+        .header {
+            height: 64px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .toggle-sidebar {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+            border-radius: 4px;
+        }
+        .toggle-sidebar:hover { background: var(--bg); }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .breadcrumb a { color: var(--text-secondary); text-decoration: none; }
+        .breadcrumb a:hover { color: var(--primary); }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        .logout-btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        /* Content */
+        .content {
+            padding: 24px;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--card-shadow);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .stat-card.green { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .stat-card.blue { background: linear-gradient(135deg, #1E80FF 0%, #0066CC 100%); }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card.cyan { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .stat-icon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 32px;
+            opacity: 0.3;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: #e8e8e8; color: var(--text-primary); }
+        .btn-secondary:hover { background: #d9d9d9; }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        /* Large Button */
+        .btn-lg { padding: 14px 28px; font-size: 15px; border-radius: 8px; }
+
+        /* Outline Button */
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(30, 128, 255, 0.05);
+        }
+
+        /* Small Button */
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+
+        /* Badge (for labels/tags, not actions) */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1;
+        }
+        .badge-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .badge-secondary {
+            background: #e8e8e8;
+            color: var(--text-primary);
+        }
+
+        /* Operations Panel Styles */
+        .ops-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+        .ops-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 8px 24px;
+        }
+        .ops-section:not(:last-child) {
+            border-right: 1px solid var(--border);
+        }
+        .ops-section:first-child {
+            padding-left: 0;
+        }
+        .ops-section:last-child {
+            padding-right: 0;
+        }
+        .ops-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ops-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ops-btns .btn {
+            justify-content: flex-start;
+            width: 100%;
+        }
+        @media (max-width: 992px) {
+            .ops-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .ops-section {
+                padding: 0;
+            }
+            .ops-section:not(:last-child) {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 20px;
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th {
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        tr:hover { background: #fafafa; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30,128,255,0.1);
+        }
+        .form-group textarea { height: 100px; resize: vertical; }
+        
+        /* Flash Messages */
+        .flash {
+            padding: 14px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        .flash.success { background: #f6ffed; border: 1px solid #b7eb8f; color: #52c41a; }
+        .flash.error { background: #fff2f0; border: 1px solid #ffccc7; color: var(--danger); }
+        .flash.warning { background: #fffbe6; border: 1px solid #ffe58f; color: var(--warning); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Pagination */
+        .pagination {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .pagination a, .pagination span {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .pagination a:hover { border-color: var(--primary); color: var(--primary); }
+        .pagination .active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        /* Filters */
+        .filters {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .filters form { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .filters input, .filters select {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        .filters input:focus, .filters select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(30,128,255,0.1);
+        }
+        
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .toast {
+            padding: 14px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 280px;
+            animation: toastIn 0.3s ease;
+        }
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 220px;
+            }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .sidebar.collapsed { width: 220px; }
+            .sidebar.collapsed .nav-item .text { display: inline; }
+            .sidebar.collapsed .nav-item { justify-content: flex-start; padding: 12px 20px; }
+            .main { margin-left: 0; }
+            .header h1 { font-size: 14px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .card { padding: 16px; }
+            .content { padding: 16px; }
+        }
+        .ops-hint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon"><svg class="icon" style="width:20px;height:20px;display:block;"><use href="#icon-dashboard"/></svg></div>
+                <h1>管理后台</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/" class="nav-item {% if request.path == '/admin/' %}active{% endif %}">
+                    <span class="icon"><svg><use href="#icon-dashboard"/></svg></span>
+                    <span class="text">仪表盘</span>
+                </a>
+                <a href="/admin/projects" class="nav-item {% if '/projects' in request.path %}active{% endif %}">
+                    <span class="icon"><svg><use href="#icon-folder"/></svg></span>
+                    <span class="text">项目管理</span>
+                </a>
+                <a href="/admin/sources" class="nav-item {% if '/sources' in request.path or '/custom-source' in request.path %}active{% endif %}">
+                    <span class="icon"><svg><use href="#icon-refresh"/></svg></span>
+                    <span class="text">数据源</span>
+                </a>
+                <a href="/admin/settings" class="nav-item {% if '/settings' in request.path %}active{% endif %}">
+                    <span class="icon"><svg><use href="#icon-key"/></svg></span>
+                    <span class="text">设置</span>
+                </a>
+                <a href="/admin/users" class="nav-item {% if '/users' in request.path %}active{% endif %}">
+                    <span class="icon"><svg><use href="#icon-users"/></svg></span>
+                    <span class="text">用户管理</span>
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main">
+            <header class="header">
+                <div class="header-left">
+                    <button class="toggle-sidebar" onclick="toggleSidebar()"><svg style="width:20px;height:20px;"><use href="#icon-menu"/></svg></button>
+                    <div class="breadcrumb">
+                        <a href="/admin/">首页</a>
+                        {% block breadcrumb %}{% endblock %}
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">{{ session.get('username', 'U')[0].upper() }}</div>
+                        <span>{{ session.get('username', '') }}</span>
+                    </div>
+                    <a href="/admin/logout" class="logout-btn">退出</a>
+                </div>
+            </header>
+            
+            <div class="content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">
+                            <svg style="width:16px;height:16px;display:inline-block;vertical-align:middle;">{% if category == 'success' %}<use href="#icon-check"/>{% elif category == 'error' %}<use href="#icon-times"/>{% else %}<use href="#icon-warning"/>{% endif %}</svg>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-open');
+            }
+        }
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = `
+                <svg style="width:16px;height:16px;display:inline-block;vertical-align:middle;">
+                    ${type === 'success' ? '<use href="#icon-check"/>' : type === 'error' ? '<use href="#icon-times"/>' : '<use href="#icon-warning"/>'}
+                </svg>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Confirm before submit
+        document.querySelectorAll('form[data-confirm]').forEach(form => {
+            form.addEventListener('submit', e => {
+                if (!confirm(form.dataset.confirm)) e.preventDefault();
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

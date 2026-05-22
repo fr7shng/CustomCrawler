@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}自定义数据源{% endblock %}
+
+{% block breadcrumb %}<span>› 自定义数据源</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-tools"/></svg> 自定义数据源管理</h2>
+    </div>
+    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+        通过自然语言描述，让 AI 自动生成爬虫代码
+    </p>
+    <div class="btn-group">
+        <a href="/admin/custom-source/new" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-plus"/></svg> 创建新数据源</a>
+    </div>
+</div>
+
+{% if sources %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-list"/></svg> 已有的自定义数据源</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>描述</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th style="width: 300px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for source in sources %}
+            <tr>
+                <td><strong>{{ source.name }}</strong></td>
+                <td style="color: var(--text-secondary);">{{ source.description or '无' }}</td>
+                <td>
+                    {% if source.enabled %}
+                    <span style="color: var(--success);">● 已启用</span>
+                    {% else %}
+                    <span style="color: var(--text-secondary);">○ 已禁用</span>
+                    {% endif %}
+                </td>
+                <td style="color: var(--text-secondary); font-size: 12px;">{{ source.created_at }}</td>
+                <td>
+                    <form method="post" action="/admin/custom-source/test" style="display: inline;">
+                        <input type="hidden" name="name" value="{{ source.name }}">
+                        <button type="submit" class="btn btn-primary btn-sm">▶ 测试运行</button>
+                    </form>
+                    <form method="post" action="/admin/custom-source/edit" style="display: inline;">
+                        <input type="hidden" name="name" value="{{ source.name }}">
+                        <button type="submit" class="btn btn-secondary btn-sm"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-edit"/></svg> 编辑</button>
+                    </form>
+                    <form method="post" action="/admin/custom-source/delete" style="display: inline;" onsubmit="return confirm('确定要删除 {{ source.name }} 吗？')">
+                        <input type="hidden" name="name" value="{{ source.name }}">
+                        <button type="submit" class="btn btn-danger btn-sm"><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-trash"/></svg> 删除</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+    <p style="font-size: 48px; margin-bottom: 16px;"><svg style="width:48px;height:48px;display:block;margin:0 auto;"><use href="#icon-tools"/></svg></p>
+    <p>暂无自定义数据源</p>
+    <p style="font-size: 13px; margin-top: 8px;">点击上方按钮创建第一个 AI 生成的数据源</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-lightbulb"/></svg> 使用说明</h2>
+    </div>
+    <div style="line-height: 1.8;">
+        <p><strong>1. 创建数据源</strong> - 点击"创建新数据源"，输入自然语言描述你想要的爬虫功能</p>
+        <p><strong>2. AI 生成代码</strong> - 系统使用 LLM (如 OpenAI/DeepSeek) 自动生成 Python 爬虫代码</p>
+        <p><strong>3. 测试调试</strong> - 可以立即测试运行，查看抓取结果</p>
+        <p><strong>4. 编辑修改</strong> - 如果需要微调，可以直接编辑生成的代码</p>
+        <p><strong>5. 启用数据源</strong> - 测试通过后，数据源会出现在数据刷新列表中</p>
+    </div>
+    <p style="color: var(--text-secondary); font-size: 13px; margin-top: 16px;">
+        <svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-warning"/></svg> 需要配置环境变量: <code>OPENAI_API_KEY</code> 或 <code>DEEPSEEK_API_KEY</code>
+    </p>
+</div>
+{% endblock %}

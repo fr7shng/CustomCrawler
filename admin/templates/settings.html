@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}LLM Settings{% endblock %}
+
+{% block breadcrumb %}<span>Settings</span><span>LLM Config</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">LLM Provider Configuration</h2>
+    </div>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="provider">Provider</label>
+            <select id="provider" name="provider" onchange="onProviderChange()">
+                <option value="openai" {% if provider == 'openai' %}selected{% endif %}>OpenAI 兼容模式</option>
+                <option value="anthropic" {% if provider == 'anthropic' %}selected{% endif %}>Anthropic</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="base_url">API Base URL</label>
+            <input type="text" id="base_url" name="base_url" value="{{ base_url }}" placeholder="留空使用默认 URL">
+            <small id="url-hint" style="color: var(--text-secondary); margin-top: 4px; display: block;"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="api_key">API Key</label>
+            <input type="password" id="api_key" name="api_key" value="{{ api_key }}">
+        </div>
+
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" id="model" name="model" value="{{ model }}" placeholder="留空使用默认模型">
+            <small id="model-hint" style="color: var(--text-secondary); margin-top: 4px; display: block;"></small>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">保存</button>
+            <button type="button" class="btn btn-secondary" onclick="testConnection()">测试连接</button>
+        </div>
+    </form>
+
+    <div id="test-result" style="margin-top: 20px; display: none;">
+        <pre id="test-result-content" style="padding: 16px; background: var(--bg);"></pre>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <div class="card-header">
+        <h2 class="card-title">常用模型快捷配置</h2>
+    </div>
+    <p style="color: var(--text-secondary); margin-bottom: 16px;">
+        点击下方按钮自动填充对应模型的配置。注意：需要对应的 API Key。
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.openai.com/v1', '', 'gpt-4o-mini')">GPT-4o Mini</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.openai.com/v1', '', 'gpt-4o')">GPT-4o</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.openai.com/v1', '', 'gpt-4.1')">GPT-4.1</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.openai.com/v1', '', 'o3-mini')">o3-mini</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.deepseek.com/v1', '', 'deepseek-chat')">DeepSeek Chat</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.deepseek.com/v1', '', 'deepseek-reasoner')">DeepSeek Reasoner</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('openai', 'https://api.deepseek.com/v1', '', 'deepseek-v4-pro')">DeepSeek V4 Pro</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('anthropic', 'https://api.anthropic.com', '', 'claude-sonnet-4-20250514')">Claude Sonnet 4</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('anthropic', 'https://api.anthropic.com', '', 'claude-3-5-sonnet-20241022')">Claude 3.5 Sonnet</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('anthropic', 'https://api.anthropic.com', '', 'claude-3-5-haiku-20241022')">Claude 3.5 Haiku</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="applyPreset('anthropic', 'https://api.anthropic.com', '', 'claude-opus-4-20250514')">Claude Opus 4</button>
+    </div>
+</div>
+
+<script>
+var providerHints = {
+    'openai': {
+        url: '支持任何 OpenAI 兼容的 API 地址，例如 https://api.openai.com/v1、https://api.deepseek.com/v1 等',
+        model: '填写对应 API 支持的模型名称，如 gpt-4o-mini、deepseek-chat 等'
+    },
+    'anthropic': {
+        url: 'Anthropic API 地址，默认 https://api.anthropic.com',
+        model: '填写 Claude 模型名称，如 claude-sonnet-4-20250514、claude-3-5-sonnet-20241022 等'
+    }
+};
+
+var providerDefaults = {
+    'openai': { url: 'https://api.openai.com/v1', model: 'gpt-4o-mini' },
+    'anthropic': { url: 'https://api.anthropic.com', model: 'claude-sonnet-4-20250514' }
+};
+
+function onProviderChange() {
+    var provider = document.getElementById('provider').value;
+    var urlHint = document.getElementById('url-hint');
+    var modelHint = document.getElementById('model-hint');
+    var baseUrl = document.getElementById('base_url');
+    var model = document.getElementById('model');
+
+    urlHint.textContent = providerHints[provider].url;
+    modelHint.textContent = providerHints[provider].model;
+
+    if (!baseUrl.value) {
+        baseUrl.value = providerDefaults[provider].url;
+    }
+    if (!model.value) {
+        model.value = providerDefaults[provider].model;
+    }
+}
+
+function applyPreset(provider, url, apiKey, model) {
+    document.getElementById('provider').value = provider;
+    document.getElementById('base_url').value = url;
+    document.getElementById('model').value = model;
+    if (apiKey) {
+        document.getElementById('api_key').value = apiKey;
+    }
+    onProviderChange();
+}
+
+async function testConnection() {
+    var provider = document.getElementById('provider').value;
+    var baseUrl = document.getElementById('base_url').value;
+    var apiKey = document.getElementById('api_key').value;
+    var model = document.getElementById('model').value;
+
+    var resultDiv = document.getElementById('test-result');
+    var resultContent = document.getElementById('test-result-content');
+
+    resultDiv.style.display = 'block';
+    resultContent.textContent = '测试中...';
+
+    try {
+        var response = await fetch('/admin/settings/test-api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({provider: provider, base_url: baseUrl, api_key: apiKey, model: model})
+        });
+
+        var data = await response.json();
+
+        if (data.success) {
+            resultContent.textContent = '成功!\n\n回复:\n' + data.reply;
+        } else {
+            resultContent.textContent = '失败!\n\n错误:\n' + data.error;
+        }
+    } catch (err) {
+        resultContent.textContent = '请求失败: ' + err.message;
+    }
+}
+
+onProviderChange();
+</script>
+{% endblock %}

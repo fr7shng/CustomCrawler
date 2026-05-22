@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }}用户{% endblock %}
+
+{% block breadcrumb %}<span>› <a href="/admin/users">用户管理</a></span><span>› {{ action }}</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-users"/></svg> {{ action }}用户</h2>
+    </div>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" placeholder="输入用户名" value="{{ user[1] if user else '' }}" required {% if action == '编辑' %}readonly style="background: var(--bg);"{% endif %}>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">密码{% if action == '编辑' %} (留空则保持不变){% endif %}</label>
+            <input type="password" id="password" name="password" placeholder="输入密码" {% if action == '创建' %}required{% endif %}>
+        </div>
+        
+        <div class="form-group">
+            <label for="role">角色</label>
+            <select id="role" name="role">
+                <option value="user" {% if user and user[2] == 'user' %}selected{% endif %}><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-user"/></svg> 普通用户</option>
+                <option value="admin" {% if user and user[2] == 'admin' %}selected{% endif %}><svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;"><use href="#icon-crown"/></svg> 管理员</option>
+            </select>
+        </div>
+        
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-floppy"/></svg> 保存</button>
+            <a href="/admin/users" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

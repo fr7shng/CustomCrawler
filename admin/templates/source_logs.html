@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}采集日志{% endblock %}
+{% block breadcrumb %}<span>› <a href="/admin/sources">数据源</a></span><span>› 采集日志{% if source_name %} - {{ source_name }}{% endif %}</span>{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">采集日志{% if source_name %} - {{ source_name }}{% endif %}</h2>
+        <div class="filters">
+            <form method="get" style="display: flex; gap: 12px; align-items: center;">
+                <select name="source" onchange="this.form.submit()">
+                    <option value="">所有数据源</option>
+                    {% for src in sources %}
+                    <option value="{{ src }}" {% if source_name == src %}selected{% endif %}>{{ src }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>数据源</th>
+                <th>开始时间</th>
+                <th>耗时</th>
+                <th>状态</th>
+                <th>项目数</th>
+                <th>错误信息</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr>
+                <td><span class="badge badge-secondary">{{ log.source_name }}</span></td>
+                <td>{{ log.started_at }}</td>
+                <td>{% if log.response_time_ms %}{{ log.response_time_ms }}ms{% else %}-{% endif %}</td>
+                <td>{% if log.status == 'success' %}<span style="color:var(--success);">成功</span>{% elif log.status == 'failed' %}<span style="color:var(--danger);">失败</span>{% else %}<span style="color:var(--text-secondary);">运行中</span>{% endif %}</td>
+                <td>{{ log.projects_count }}</td>
+                <td>{% if log.error_message %}<span style="color:var(--danger);font-size:13px;">{{ log.error_message[:100] }}{% if log.error_message|length > 100 %}...{% endif %}</span>{% else %}-{% endif %}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center;color:var(--text-secondary);">暂无日志</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

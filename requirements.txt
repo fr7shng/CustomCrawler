@@ -1,0 +1,9 @@
+# Core dependencies
+requests>=2.31.0
+pyyaml>=6.0.1
+schedule>=1.2.1
+flask>=3.0.0
+lxml>=6.0.0
+
+# Optional: for HTML cleanup
+lxml-html-clean>=0.4.0

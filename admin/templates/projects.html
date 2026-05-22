@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}项目管理{% endblock %}
+
+{% block breadcrumb %}<span>› 项目管理</span>{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-folder"/></svg> 项目列表</h2>
+        <a href="/admin/project/new" class="btn btn-primary"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-plus"/></svg> 新建项目</a>
+    </div>
+    
+    <div class="filters">
+        <form method="get" action="/admin/projects">
+            <input type="text" name="search" placeholder="搜索项目..." value="{{ search }}" style="width: 200px;">
+            <select name="language">
+                <option value="">所有语言</option>
+                {% for lang in languages %}
+                <option value="{{ lang }}" {% if language == lang %}selected{% endif %}>{{ lang }}</option>
+                {% endfor %}
+            </select>
+            <select name="source">
+                <option value="">所有来源</option>
+                {% for src in sources %}
+                <option value="{{ src }}" {% if source == src %}selected{% endif %}>{{ src }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">筛选</button>
+            <a href="/admin/projects" class="btn btn-secondary">重置</a>
+        </form>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+        <button type="button" class="btn btn-danger" onclick="batchDelete()"><svg style="width:14px;height:14px;display:inline-block;vertical-align:middle;"><use href="#icon-trash"/></svg> 批量删除 (<span id="selected-count">0</span>)</button>
+    </div>
+    
+    <p style="color: var(--text-secondary); margin-bottom: 16px;">
+        显示 <strong>{{ projects|length }}</strong> 项，共 <strong>{{ total }}</strong> 个项目
+    </p>
+    
+    <form id="batch-form" method="post" action="/admin/projects/batch-delete">
+        <input type="hidden" name="ids" id="selected-ids">
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40px;"><input type="checkbox" id="select-all" onchange="toggleAll(this)"></th>
+                <th>ID</th>
+                <th>项目名称</th>
+                <th>来源</th>
+                <th>语言</th>
+                <th>Stars</th>
+                <th style="width: 150px;">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+            <tr>
+                <td><input type="checkbox" class="project-checkbox" value="{{ project.id }}" onchange="updateCount()"></td>
+                <td>{{ project.id if project.id else '-' }}</td>
+                <td>
+                    <a href="{{ project.project_url }}" target="_blank" style="color: var(--primary);">{{ project.project_name }}</a>
+                    {% if project.description %}
+                    <br><small style="color:#8c8c8c;">{{ project.description[:80] }}{% if project.description|length > 80 %}...{% endif %}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-secondary">
+                        <svg style="width:12px;height:12px;display:inline-block;vertical-align:middle;">{% if project.source == 'github_html' %}<use href="#icon-github"/>{% elif project.source == 'hackernews' %}<use href="#icon-hackernews"/>{% elif project.source == 'reddit' %}<use href="#icon-reddit"/>{% elif project.source == 'juejin' %}<use href="#icon-juejin"/>{% else %}<use href="#icon-globe"/>{% endif %}</svg>
+                        {{ project.source }}
+                    </span>
+                </td>
+                <td>{{ project.language or '-' }}</td>
+                <td>{{ project.stars }}</td>
+                <td>
+                    <a href="/admin/project/{{ project.id }}" class="btn btn-primary btn-sm">编辑</a>
+                    <a href="/admin/delete/{{ project.id }}" class="btn btn-danger btn-sm">删除</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-secondary);">未找到项目</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if total > per_page %}
+    <div class="pagination">
+        {% if page > 1 %}
+        <a href="/admin/projects?page={{ page-1 }}&search={{ search }}&language={{ language }}&source={{ source }}">‹ 上一页</a>
+        {% endif %}
+        <span class="active">第 {{ page }} / {{ ((total - 1) // per_page) + 1 }} 页</span>
+        {% if page * per_page < total %}
+        <a href="/admin/projects?page={{ page+1 }}&search={{ search }}&language={{ language }}&source={{ source }}">下一页 ›</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleAll(source) {
+    document.querySelectorAll('.project-checkbox').forEach(cb => cb.checked = source.checked);
+    updateCount();
+}
+function updateCount() {
+    document.getElementById('selected-count').textContent = document.querySelectorAll('.project-checkbox:checked').length;
+}
+function batchDelete() {
+    const selected = [...document.querySelectorAll('.project-checkbox:checked')].map(cb => cb.value);
+    if (!selected.length) { alert('请至少选择一个项目'); return; }
+    if (!confirm(`确定要删除 ${selected.length} 个项目吗?`)) return;
+    document.getElementById('selected-ids').value = selected.join(',');
+    document.getElementById('batch-form').submit();
+}
+</script>
+{% endblock %}

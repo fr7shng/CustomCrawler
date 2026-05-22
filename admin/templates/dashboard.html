@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}仪表盘{% endblock %}
+
+{% block breadcrumb %}<span>› 仪表盘</span>{% endblock %}
+
+{% block content %}
+<!-- Stats Overview -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-dashboard"/></svg> 数据统计概览</h2>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <div class="stat-icon"><svg style="width:32px;height:32px;opacity:0.3;"><use href="#icon-box"/></svg></div>
+            <div class="stat-value">{{ stats.total_projects }}</div>
+            <div class="stat-label">项目总数</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-icon"><svg style="width:32px;height:32px;opacity:0.3;"><use href="#icon-code"/></svg></div>
+            <div class="stat-value">{{ stats.language_count }}</div>
+            <div class="stat-label">编程语言</div>
+        </div>
+        {% for source, count in stats['by_source'].items() %}
+        <div class="stat-card {% if loop.index is even %}orange{% else %}cyan{% endif %}">
+            <div class="stat-icon">
+                <svg style="width:32px;height:32px;opacity:0.3;">{% if source == 'github_html' %}<use href="#icon-github"/>{% elif source == 'hackernews' %}<use href="#icon-hackernews"/>{% elif source == 'reddit' %}<use href="#icon-reddit"/>{% elif source == 'juejin' %}<use href="#icon-juejin"/>{% else %}<use href="#icon-globe"/>{% endif %}</svg>
+            </div>
+            <div class="stat-value">{{ count }}</div>
+            <div class="stat-label">{{ source }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Operations Panel -->
+<div class="card" style="padding:16px;">
+    <div class="ops-btns">
+        <a href="/admin/projects" class="btn btn-primary btn-sm"><svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-folder"/></svg> 项目列表</a>
+        <a href="/admin/project/new" class="btn btn-secondary btn-sm"><svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-plus"/></svg> 新建</a>
+        <a href="/admin/sources" class="btn btn-secondary btn-sm"><svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-refresh"/></svg> 数据源</a>
+        <a href="/" target="_blank" class="btn btn-secondary btn-sm" id="viewFrontendBtn"><svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-globe"/></svg> 前台</a>
+        <form method="post" action="/admin/refresh-all" id="refreshAllForm" style="display:inline;" onsubmit="return confirmRefresh(this)">
+            <button type="submit" class="btn btn-primary btn-sm" id="refreshBtn">
+                <svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-refresh"/></svg> <span id="refreshBtnText">刷新</span>
+            </button>
+        </form>
+    </div>
+    <div id="refreshStatus" style="margin-top:12px;padding:12px;border-radius:4px;display:none;">
+        <span id="refreshStatusText"></span>
+    </div>
+</div>
+<script>
+var refreshPollingInterval = null;
+var isRefreshing = false;
+
+function confirmRefresh(form) {
+    if (!confirm('确定要刷新所有数据源并重新生成前台页面吗？')) return false;
+    var btn = document.getElementById('refreshBtn');
+    var text = document.getElementById('refreshBtnText');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> 刷新中...';
+    isRefreshing = true;
+    showRefreshStatus('正在后台刷新数据源，请稍候...', 'info');
+    startRefreshPolling();
+    return true;
+}
+
+function showRefreshStatus(message, type) {
+    var statusDiv = document.getElementById('refreshStatus');
+    var statusText = document.getElementById('refreshStatusText');
+    statusDiv.style.display = 'block';
+    statusText.textContent = message;
+    
+    if (type === 'success') {
+        statusDiv.style.background = '#d4edda';
+        statusDiv.style.color = '#155724';
+    } else if (type === 'error') {
+        statusDiv.style.background = '#f8d7da';
+        statusDiv.style.color = '#721c24';
+    } else if (type === 'warning') {
+        statusDiv.style.background = '#fff3cd';
+        statusDiv.style.color = '#856404';
+    } else {
+        statusDiv.style.background = '#d1ecf1';
+        statusDiv.style.color = '#0c5460';
+    }
+}
+
+function startRefreshPolling() {
+    if (refreshPollingInterval) clearInterval(refreshPollingInterval);
+    refreshPollingInterval = setInterval(checkRefreshStatus, 2000);
+}
+
+function stopRefreshPolling() {
+    if (refreshPollingInterval) {
+        clearInterval(refreshPollingInterval);
+        refreshPollingInterval = null;
+    }
+}
+
+function checkRefreshStatus() {
+    fetch('/admin/refresh-status')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (data.status === 'completed') {
+                stopRefreshPolling();
+                showRefreshStatus(data.message, 'success');
+                var btn = document.getElementById('refreshBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-refresh"/></svg> 刷新';
+                isRefreshing = false;
+                // 3 秒后隐藏状态
+                setTimeout(function() {
+                    document.getElementById('refreshStatus').style.display = 'none';
+                }, 3000);
+            } else if (data.status === 'failed') {
+                stopRefreshPolling();
+                showRefreshStatus(data.message || '刷新失败', 'error');
+                var btn = document.getElementById('refreshBtn');
+                btn.disabled = false;
+                btn.innerHTML = '<svg style="width:12px;height:12px;display:inline-block;"><use href="#icon-refresh"/></svg> 刷新';
+                isRefreshing = false;
+            } else if (data.status === 'running') {
+                showRefreshStatus(data.message || '正在刷新中...', 'info');
+            }
+        })
+        .catch(function(err) {
+            console.error('Failed to check refresh status:', err);
+        });
+}
+
+// 页面加载时检查是否有进行中的任务
+window.addEventListener('DOMContentLoaded', function() {
+    checkRefreshStatus();
+});
+</script>
+
+{% if stats['date_range'] and stats['date_range'][0] %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title"><svg style="width:20px;height:20px;display:inline-block;vertical-align:middle;"><use href="#icon-calendar"/></svg> 数据时间范围</h2>
+    </div>
+    <p>起始时间: <strong>{{ stats.date_range[0] }}</strong></p>
+    <p>截止时间: <strong>{{ stats.date_range[1] }}</strong></p>
+</div>
+{% endif %}
+{% endblock %}
