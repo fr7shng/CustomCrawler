@@ -146,25 +146,25 @@ githubPH/
 ## 界面预览
 
 ### 管理后台仪表盘
-![管理后台仪表盘](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/1-admin-dashboard.png)
+![管理后台仪表盘](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/1-admin-dashboard.png)
 
 ### 自定义数据源生成
-![AI 生成数据源](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/2-custom-source.png)
+![AI 生成数据源](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/2-custom-source.png)
 
 ### 项目管理
-![项目管理列表](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/3-projects-list.png)
+![项目管理列表](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/3-projects-list.png)
 
 ### 数据源管理
-![数据源管理](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/4-data-sources.png)
+![数据源管理](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/4-data-sources.png)
 
 ### 数据导出
-![数据导出](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/5-export-data.png)
+![数据导出](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/5-export-data.png)
 
 ### 用户管理
-![用户管理](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/6-users-management.png)
+![用户管理](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/6-users-management.png)
 
 ### AI 代码生成器
-![AI 生成器](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/7-ai-generator.png)
+![AI 生成器](https://github.com/fr7shng/CustomCrawler/blob/main/screenshots/7-ai-generator.png)
 
 详细结构参见 [ARCHITECTURE_OPTIMIZATION.md](ARCHITECTURE_OPTIMIZATION.md)。
 
