@@ -138,8 +138,32 @@ githubPH/
 ├── admin/                     # Web 管理后台
 │   └── templates/             # 16 个管理页面模板
 ├── config/                    # 配置管理
+├── screenshots/               # 界面截图
 └── docs/                      # 项目文档
 ```
+
+## 界面预览
+
+### 管理后台仪表盘
+![管理后台仪表盘](screenshots/1-admin-dashboard.png)
+
+### 自定义数据源生成
+![AI 生成数据源](screenshots/2-custom-source.png)
+
+### 项目管理
+![项目管理列表](screenshots/3-projects-list.png)
+
+### 数据源管理
+![数据源管理](screenshots/4-data-sources.png)
+
+### 数据导出
+![数据导出](screenshots/5-export-data.png)
+
+### 用户管理
+![用户管理](screenshots/6-users-management.png)
+
+### AI 代码生成器
+![AI 生成器](screenshots/7-ai-generator.png)
 
 详细结构参见 [ARCHITECTURE_OPTIMIZATION.md](ARCHITECTURE_OPTIMIZATION.md)。
 

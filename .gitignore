@@ -37,6 +37,9 @@ venv/
 .DS_Store
 Thumbs.db
 
+# Screenshots
+screenshots/
+
 # Trellis internal
 .trellis/.gitignore
 .trellis/.template-hashes.json
