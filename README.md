@@ -1,6 +1,6 @@
-# GitHub Trending Scraper
+# Custom Crawler
 
-多源趋势项目发现与分析平台 — 从 GitHub、HackerNews、Reddit、掘金、V2EX、Gitee 等平台采集热门项目，自动生成展示页面和分析报告。
+多源趋势项目发现与分析平台 — 从 GitHub、HackerNews、Reddit、掘金、V2EX、Gitee 等平台采集热门项目，自动生成展示页面和分析报告。支持自定义爬虫代码生成。
 
 ## 核心功能
 
@@ -127,6 +127,7 @@ translation:
 ## 项目结构
 
 ```
+Custom Crawler/
 githubPH/
 ├── main.py                    # CLI 入口
 ├── admin_server.py            # Flask 管理服务入口
@@ -145,25 +146,25 @@ githubPH/
 ## 界面预览
 
 ### 管理后台仪表盘
-![管理后台仪表盘](screenshots/1-admin-dashboard.png)
+![管理后台仪表盘](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/1-admin-dashboard.png)
 
 ### 自定义数据源生成
-![AI 生成数据源](screenshots/2-custom-source.png)
+![AI 生成数据源](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/2-custom-source.png)
 
 ### 项目管理
-![项目管理列表](screenshots/3-projects-list.png)
+![项目管理列表](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/3-projects-list.png)
 
 ### 数据源管理
-![数据源管理](screenshots/4-data-sources.png)
+![数据源管理](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/4-data-sources.png)
 
 ### 数据导出
-![数据导出](screenshots/5-export-data.png)
+![数据导出](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/5-export-data.png)
 
 ### 用户管理
-![用户管理](screenshots/6-users-management.png)
+![用户管理](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/6-users-management.png)
 
 ### AI 代码生成器
-![AI 生成器](screenshots/7-ai-generator.png)
+![AI 生成器](https://github.com/ng-dev-2024/githubPH/blob/main/screenshots/7-ai-generator.png)
 
 详细结构参见 [ARCHITECTURE_OPTIMIZATION.md](ARCHITECTURE_OPTIMIZATION.md)。
 
