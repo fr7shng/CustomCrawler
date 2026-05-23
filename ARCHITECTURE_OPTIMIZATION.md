@@ -1,8 +1,8 @@
-# GitHub Trending Scraper - 项目结构文档
+# CustomCrawler - 项目结构文档
 
 ## 项目概览
 
-**项目名称**: github-trending-scraper v2.0.0  
+**项目名称**: CustomCrawler v2.0.0  
 **项目描述**: 多源趋势项目发现与分析平台  
 **Python 版本**: >=3.9  
 **技术栈**: Python, Flask, SQLite, HTML/CSS/JS  
@@ -12,7 +12,7 @@
 ## 完整目录结构
 
 ```
-githubPH/
+CustomCrawler/
 ├── .gitignore                     # Git 忽略规则
 ├── Dockerfile                     # Docker 构建文件
 ├── Makefile                       # 便捷命令集合
